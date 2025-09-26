@@ -67,15 +67,13 @@ A powerful API service that helps brands find the most suitable influencers for 
 
 ## 🏃‍♂️ Running the Application
 
-1. **Start the FastAPI server**
+   **Start the FastAPI server**
    ```bash
    cd brand_influencer_matcher_Backend
    uvicorn main:app --reload
    ```
 
-2. **Access the API documentation**
-   - Swagger UI: http://localhost:8000/docs
-   - ReDoc: http://localhost:8000/redoc
+
 
 ## 📚 API Endpoints
 
@@ -124,17 +122,6 @@ class InfluencerAnalysis(BaseModel):
 | `DB_NAME` | Database name | No | `brand_influencer_db` |
 | `PINECONE_INDEX_NAME` | Name of the Pinecone index | No | `influencer-analysis` |
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
