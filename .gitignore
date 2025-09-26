@@ -104,3 +104,4 @@ out/
 
 # Production
 build
+.env
