@@ -1,4 +1,5 @@
 # Brand-Influencer Matching API
+![Uploading image.png…]()
 
 A powerful API service that helps brands find the most suitable influencers for their marketing campaigns using advanced AI and vector similarity search.
 
