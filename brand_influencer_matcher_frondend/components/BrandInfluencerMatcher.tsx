@@ -422,43 +422,64 @@ export function BrandInfluencerMatcher() {
                         </div>
                       </CardHeader>
                       <CardContent className="space-y-4">
-                        <div className="h-64 w-full">
+                        <div className="h-64 w-full relative">
                           <ResponsiveContainer width="100%" height="100%">
-                            <RadarChart cx="50%" cy="50%" outerRadius="80%" data={getInfluencerData(influencer.details)}>
-                              <PolarGrid />
-                              <PolarAngleAxis dataKey="subject" />
-                              <PolarRadiusAxis angle={30} domain={[0, 10]} />
+                            <RadarChart 
+                              cx="50%" 
+                              cy="50%" 
+                              outerRadius="70%"
+                              data={getInfluencerData(influencer.details)}
+                              margin={{ top: 10, right: 10, bottom: 10, left: 10 }}
+                            >
+                              <PolarGrid gridType="circle" stroke="#e5e7eb" />
+                              <PolarAngleAxis 
+                                dataKey="subject" 
+                                tick={{ fontSize: 12, fill: '#4b5563' }}
+                                tickLine={false}
+                              />
+                              <PolarRadiusAxis 
+                                angle={30} 
+                                domain={[0, 10]}
+                                tickCount={6}
+                                axisLine={false}
+                                tick={{ fontSize: 10, fill: '#9ca3af' }}
+                                tickFormatter={(value) => value.toString()}
+                              />
                               <Radar
                                 name="Score"
                                 dataKey="A"
-                                stroke="#8884d8"
-                                fill="#8884d8"
-                                fillOpacity={0.6}
+                                stroke="#4f46e5"
+                                fill="#4f46e5"
+                                fillOpacity={0.4}
+                                strokeWidth={2}
+                                dot={{ fill: '#4f46e5', strokeWidth: 2, r: 4 }}
                               />
                             </RadarChart>
                           </ResponsiveContainer>
                         </div>
                         
-                        <div className="grid grid-cols-2 gap-2 text-sm">
-                          <div className="text-left">
-                            <p className="font-medium">ประเภทสินค้า</p>
-                            <p className="text-muted-foreground">{influencer.details.type_of_product.toFixed(1)}/10</p>
-                          </div>
-                          <div className="text-left">
-                            <p className="font-medium">กลุ่มเป้าหมาย</p>
-                            <p className="text-muted-foreground">{influencer.details.target_group.toFixed(1)}/10</p>
-                          </div>
-                          <div className="text-left">
-                            <p className="font-medium">การวางตำแหน่ง</p>
-                            <p className="text-muted-foreground">{influencer.details.positioning.toFixed(1)}/10</p>
-                          </div>
-                          <div className="text-left">
-                            <p className="font-medium">บุคลิกภาพ</p>
-                            <p className="text-muted-foreground">{influencer.details.brand_personality.toFixed(1)}/10</p>
-                          </div>
-                          <div className="text-left">
-                            <p className="font-medium">วิสัยทัศน์</p>
-                            <p className="text-muted-foreground">{influencer.details.vision.toFixed(1)}/10</p>
+                        <div className="flex justify-center">
+                          <div className="grid grid-cols-2 gap-x-8 gap-y-3 text-sm">
+                            <div className="text-center">
+                              <p className="font-medium">ประเภทสินค้า</p>
+                              <p className="text-muted-foreground">{influencer.details.type_of_product.toFixed(1)}/10</p>
+                            </div>
+                            <div className="text-center">
+                              <p className="font-medium">กลุ่มเป้าหมาย</p>
+                              <p className="text-muted-foreground">{influencer.details.target_group.toFixed(1)}/10</p>
+                            </div>
+                            <div className="text-center">
+                              <p className="font-medium">การวางตำแหน่ง</p>
+                              <p className="text-muted-foreground">{influencer.details.positioning.toFixed(1)}/10</p>
+                            </div>
+                            <div className="text-center">
+                              <p className="font-medium">บุคลิกภาพ</p>
+                              <p className="text-muted-foreground">{influencer.details.brand_personality.toFixed(1)}/10</p>
+                            </div>
+                            <div className="col-span-2 text-center">
+                              <p className="font-medium">วิสัยทัศน์</p>
+                              <p className="text-muted-foreground">{influencer.details.vision.toFixed(1)}/10</p>
+                            </div>
                           </div>
                         </div>
                         
