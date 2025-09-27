@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 from brand_influencer_matcher_backend.services.brand_service import search_Brand, brand_collection
 from brand_influencer_matcher_backend.models.brand import BrandAnalysis
+from brand_influencer_matcher_backend.models.influencer import collection as influencer_collection
 
 router = APIRouter(prefix="/api/v1", tags=["brands"])
 
@@ -37,3 +38,38 @@ async def list_brands():
         return list(unique_brands.values())
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+class InfluencerRequest(BaseModel):
+    influencer_name: str
+
+@router.get("/influencer-analysis/{influencer_name}")
+async def get_influencer_analysis(influencer_name: str):
+    """
+    Retrieve influencer analysis data from MongoDB by influencer name.
+    
+    Args:
+        influencer_name: Name of the influencer to retrieve analysis for
+        
+    Returns:
+        Dict containing the influencer's analysis data (only the analysis part)
+    """
+    try:
+        # Find the influencer by name (case insensitive search)
+        influencer_data = await influencer_collection.find_one(
+            {"influencer": {"$regex": f"^{influencer_name}$", "$options": "i"}},
+            {"_id": 0, "analysis": 1}  # Only return the analysis field
+        )
+        
+        if not influencer_data or "analysis" not in influencer_data:
+            raise HTTPException(
+                status_code=404,
+                detail=f"No analysis found for influencer: {influencer_name}"
+            )
+            
+        return influencer_data["analysis"]
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error retrieving influencer analysis: {str(e)}"
+        )
