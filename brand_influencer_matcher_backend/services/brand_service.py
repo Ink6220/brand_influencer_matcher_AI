@@ -6,10 +6,12 @@ from brand_influencer_matcher_backend.models.brand import BrandAnalysis, brand_a
 # MongoDB setup
 # ------------------------------
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv()
+# Load environment variables from .env file in project root
+env_path = Path(__file__).parent.parent / '.env'
+load_dotenv(dotenv_path=env_path)
 
 MONGO_URI = os.getenv("MONGODB_URI")
 DB_NAME = os.getenv("DB_NAME", "brand_influencer_db")

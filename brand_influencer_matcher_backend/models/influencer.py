@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 import cohere
 from openai import AsyncOpenAI
-from pinecone import Pinecone  # <- ใช้ class ใหม่
+from pinecone import Pinecone, ServerlessSpec  # <- ใช้ class ใหม่
 from motor.motor_asyncio import AsyncIOMotorClient
 
 # Import centralized configuration
@@ -21,11 +21,10 @@ co = cohere.Client(COHERE_API_KEY)
 # Initialize Pinecone (new SDK)
 # -----------------------------
 pc = Pinecone(api_key=PINECONE_API_KEY)
-
 index = None
 try:
     # List all indexes
-    existing_indexes = pc.list_indexes().names()  # ใหม่: .names()
+    existing_indexes = pc.list_indexes().names()
     
     # Create index if it doesn't exist
     if PINECONE_INDEX_NAME not in existing_indexes:
@@ -33,7 +32,7 @@ try:
             name=PINECONE_INDEX_NAME,
             dimension=PINECONE_DIMENSION,
             metric=PINECONE_METRIC,
-            spec=PINECONE_SPEC  # ใช้ spec ตาม config
+            spec=PINECONE_SPEC
         )
     
     # Connect to the index
