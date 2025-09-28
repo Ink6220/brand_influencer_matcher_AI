@@ -86,8 +86,7 @@ flowchart LR
     %% Matching + DB
     BrandDB --> Matching[Matching Brand ↔ Influencer]
     InfluDB --> Matching
-    Matching --> Application
-    Application --> Matching
+    Matching <--> Application
 ```
 ## 🚀 Installation
 
