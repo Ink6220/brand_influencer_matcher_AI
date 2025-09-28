@@ -19,7 +19,7 @@ A powerful platform that helps brands find the most suitable influencers for the
 
 - **🔍 Influencer Discovery** - Find influencers that match your brand's identity
 - <div align="center">
-<img width="626" height="439" alt="image" src="https://github.com/user-attachments/assets/73b5f13e-cdbd-455f-a2af-4b72c96dbd06" />
+<img width="626" height="626" alt="image" src="https://github.com/user-attachments/assets/4f08989b-093e-4ca1-bac5-98f5fb8e8770" />
 </div>
 - **🚀 Modern Interface** - Intuitive and user-friendly dashboard
 - **📈 Smart Scoring** - Automated compatibility scoring system
@@ -30,10 +30,23 @@ A powerful platform that helps brands find the most suitable influencers for the
 - **📱 Detailed Profiles** - View comprehensive influencer insights and analytics
 - <div align="center">
 <img width="597" height="580" alt="image" src="https://github.com/user-attachments/assets/370622bf-b93f-408f-be23-f6f0582d1446" />
-<img width="392" height="775" alt="image" src="https://github.com/user-attachments/assets/4b226c5d-da9c-4e7f-bb39-a480d4d3e2fc" />
+</div>
+- <div align="center">
+<img width="300" height="600" alt="image" src="https://github.com/user-attachments/assets/4b226c5d-da9c-4e7f-bb39-a480d4d3e2fc" />
 </div>
 - **📤 Uploade New Influencers & Brands ** - Easy to update New influencer and Brands
-
+- <div align="center">
+<img width="304" height="194" alt="image" src="https://github.com/user-attachments/assets/7d4ec8f8-06e3-4649-be7c-e26a537ec4f6" />
+</div>
+- <div align="center">
+<img width="299" height="166" alt="image" src="https://github.com/user-attachments/assets/6d9a7ba6-0476-42ec-b67c-01cd30da084d" />
+</div>
+- <div align="center">
+<img width="299" height="166" alt="image" src="https://github.com/user-attachments/assets/6d9a7ba6-0476-42ec-b67c-01cd30da084d" />
+</div>
+- <div align="center">
+<img width="301" height="170" alt="image" src="https://github.com/user-attachments/assets/9c9079bf-5c6d-4ae1-9c9b-82eeed122c77" />
+</div>
 
 ## 🛠️ Project Structure
 
