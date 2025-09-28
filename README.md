@@ -9,16 +9,31 @@
 </div>
 
 ## 📝 Overview
+<div align="center">
+<img width="713" height="784" alt="image" src="https://github.com/user-attachments/assets/3e8cc0f6-55f8-4b53-8e7b-9a03ca3d6c9d" />
+</div>
 
 A powerful platform that helps brands find the most suitable influencers for their marketing campaigns using AI-powered analysis and matching algorithms.
 
 ## ✨ Key Features
 
 - **🔍 Influencer Discovery** - Find influencers that match your brand's identity
-- **📊 Compatibility Analysis** - In-depth analysis of brand-influencer compatibility
-- **📱 Detailed Profiles** - View comprehensive influencer insights and analytics
-- **📈 Smart Scoring** - Automated compatibility scoring system
+- <div align="center">
+<img width="626" height="439" alt="image" src="https://github.com/user-attachments/assets/73b5f13e-cdbd-455f-a2af-4b72c96dbd06" />
+</div>
 - **🚀 Modern Interface** - Intuitive and user-friendly dashboard
+- **📈 Smart Scoring** - Automated compatibility scoring system
+- **📊 Compatibility Analysis** - In-depth analysis of brand-influencer compatibility
+- <div align="center">
+<img width="657" height="603" alt="image" src="https://github.com/user-attachments/assets/8abe93da-302f-4919-932e-47f9af014b39" />
+</div>
+- **📱 Detailed Profiles** - View comprehensive influencer insights and analytics
+- <div align="center">
+<img width="597" height="580" alt="image" src="https://github.com/user-attachments/assets/370622bf-b93f-408f-be23-f6f0582d1446" />
+<img width="392" height="775" alt="image" src="https://github.com/user-attachments/assets/4b226c5d-da9c-4e7f-bb39-a480d4d3e2fc" />
+</div>
+- **📤 Uploade New Influencers & Brands ** - Easy to update New influencer and Brands
+
 
 ## 🛠️ Project Structure
 
