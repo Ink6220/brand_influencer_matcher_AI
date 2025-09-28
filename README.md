@@ -66,53 +66,28 @@ projectA/
 ```
 ## ༄ Project Flow
 ```mermaid
-flowchart TD
-    subgraph Brand_Flow [Brand Flow]
-        Brand[Brand User] -->|Input Brand Details| AIAgentBrand[AI Agent for Brand]
-        AIAgentBrand -->|Store/Retrieve| BrandDB[(Brand Database)]
-    end
+flowchart LR
+    %% Brand Flow
+    Brand[Name of Brand] --> AIAgentBrand[AI AGENT]
+    WebSearch1[web-search] <--> AIAgentBrand
+    AIAgentBrand --> BrandDB[Brand Database]
 
-    subgraph Influencer_Flow [Influencer Flow]
-        IFLU[Influencer] -->|Input Profile| AIAgentInflu[AI Agent for Influencer]
-        AIAgentInflu -->|Store/Retrieve| InfluDB[(Influencer Database)]
-    end
+    %% Influencer Flow
+    Influencer[Name of Influencer] --> AIAgentInflu[AI AGENT]
+    WebSearch2[web-search] --> AIAgentInflu
+    Summary --> AIAgentInflu
+    AIAgentInflu --> InfluDB[influ Database]
 
-    subgraph WebSearch_Brand [Web Search - Brand Analysis]
-        WebSearch1[Web Search] <-->|Analyze Brand| AIAgentBrand
-        InfoBrand[Brand Info] -->|type of product\ntarget group\nPositioning\nBrand Personality\nVision| WebSearch1
-    end
+    %% TikTok + ASR
+    TikTok[Influencer's Tiktok] --> ASR
+    ASR --> Summary
 
-    subgraph WebSearch_Influ [Web Search - Influencer Analysis]
-        WebSearch2[Web Search] <-->|Analyze Influencer| AIAgentInflu
-        InfoInflu[Influencer Info] -->|Type of content\nAudience\nPositioning\nPersonality\nValue| WebSearch2
-    end
-
-    subgraph TikTok_Flow [TikTok Content Analysis]
-        TikTok[TikTok Content] --> ASR[Automatic Speech Recognition]
-        ASR -->|Transcribed Text| Summary[Content Summary]
-        Summary -->|Analyze Content| AIAgentInflu
-    end
-
-    %% Data Flow
-    AIAgentBrand -->|Brand Data| Matching[Matching Engine]
-    AIAgentInflu -->|Influencer Data| Matching
-    
-    %% Database and Application
-    Matching -->|Store Matches| DB[(Matching Database)]
-    DB -->|Retrieve Matches| Application[Application UI]
-    Application -->|View/Manage| Brand
-    Application -->|View/Manage| IFLU
-
-    %% Styling
-    classDef brand fill:#f9f,stroke:#333,stroke-width:2px;
-    classDef influencer fill:#bbf,stroke:#333,stroke-width:2px;
-    classDef database fill:#7f7,stroke:#333,stroke-width:2px;
-    classDef process fill:#ff9,stroke:#333,stroke-width:2px;
-    
-    class Brand,BrandDB,InfoBrand brand;
-    class IFLU,InfluDB,InfoInflu influencer;
-    class BrandDB,InfluDB,DB database;
-    class AIAgentBrand,AIAgentInflu,Matching,ASR,Summary,WebSearch1,WebSearch2 process;
+    %% Matching + DB
+    BrandDB --> Matching[Matching Brand ↔ Influencer]
+    InfluDB --> Matching
+    Matching --> DB
+    DB --> Application
+    Application --> DB
 ```
 ## 🚀 Installation
 
