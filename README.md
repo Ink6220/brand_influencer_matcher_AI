@@ -64,7 +64,56 @@ projectA/
 │
 └── README.md                         # This file
 ```
+## ༄ Project Flow
+```mermaid
+flowchart TD
+    subgraph Brand_Flow [Brand Flow]
+        Brand[Brand User] -->|Input Brand Details| AIAgentBrand[AI Agent for Brand]
+        AIAgentBrand -->|Store/Retrieve| BrandDB[(Brand Database)]
+    end
 
+    subgraph Influencer_Flow [Influencer Flow]
+        IFLU[Influencer] -->|Input Profile| AIAgentInflu[AI Agent for Influencer]
+        AIAgentInflu -->|Store/Retrieve| InfluDB[(Influencer Database)]
+    end
+
+    subgraph WebSearch_Brand [Web Search - Brand Analysis]
+        WebSearch1[Web Search] <-->|Analyze Brand| AIAgentBrand
+        InfoBrand[Brand Info] -->|type of product\ntarget group\nPositioning\nBrand Personality\nVision| WebSearch1
+    end
+
+    subgraph WebSearch_Influ [Web Search - Influencer Analysis]
+        WebSearch2[Web Search] <-->|Analyze Influencer| AIAgentInflu
+        InfoInflu[Influencer Info] -->|Type of content\nAudience\nPositioning\nPersonality\nValue| WebSearch2
+    end
+
+    subgraph TikTok_Flow [TikTok Content Analysis]
+        TikTok[TikTok Content] --> ASR[Automatic Speech Recognition]
+        ASR -->|Transcribed Text| Summary[Content Summary]
+        Summary -->|Analyze Content| AIAgentInflu
+    end
+
+    %% Data Flow
+    AIAgentBrand -->|Brand Data| Matching[Matching Engine]
+    AIAgentInflu -->|Influencer Data| Matching
+    
+    %% Database and Application
+    Matching -->|Store Matches| DB[(Matching Database)]
+    DB -->|Retrieve Matches| Application[Application UI]
+    Application -->|View/Manage| Brand
+    Application -->|View/Manage| IFLU
+
+    %% Styling
+    classDef brand fill:#f9f,stroke:#333,stroke-width:2px;
+    classDef influencer fill:#bbf,stroke:#333,stroke-width:2px;
+    classDef database fill:#7f7,stroke:#333,stroke-width:2px;
+    classDef process fill:#ff9,stroke:#333,stroke-width:2px;
+    
+    class Brand,BrandDB,InfoBrand brand;
+    class IFLU,InfluDB,InfoInflu influencer;
+    class BrandDB,InfluDB,DB database;
+    class AIAgentBrand,AIAgentInflu,Matching,ASR,Summary,WebSearch1,WebSearch2 process;
+```
 ## 🚀 Installation
 
 ### 1. Clone the Repository
