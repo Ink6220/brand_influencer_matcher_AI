@@ -77,6 +77,7 @@ flowchart LR
     WebSearch2[web-search] <--> AIAgentInflu
     Summary --> AIAgentInflu
     AIAgentInflu --> InfluDB[influ Database]
+    AIAgentInflu --> TikTok[Influencer's Tiktok]
 
     %% TikTok + ASR
     TikTok[Influencer's Tiktok] --> ASR
