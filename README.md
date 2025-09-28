@@ -42,9 +42,6 @@ A powerful platform that helps brands find the most suitable influencers for the
 <img width="299" height="166" alt="image" src="https://github.com/user-attachments/assets/6d9a7ba6-0476-42ec-b67c-01cd30da084d" />
 </div>
 <div align="center">
-<img width="299" height="166" alt="image" src="https://github.com/user-attachments/assets/6d9a7ba6-0476-42ec-b67c-01cd30da084d" />
-</div>
-<div align="center">
 <img width="301" height="170" alt="image" src="https://github.com/user-attachments/assets/9c9079bf-5c6d-4ae1-9c9b-82eeed122c77" />
 </div>
 
