@@ -74,7 +74,7 @@ flowchart LR
 
     %% Influencer Flow
     Influencer[Name of Influencer] --> AIAgentInflu[AI AGENT]
-    WebSearch2[web-search] --> AIAgentInflu
+    WebSearch2[web-search] <--> AIAgentInflu
     Summary --> AIAgentInflu
     AIAgentInflu --> InfluDB[influ Database]
 
