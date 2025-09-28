@@ -1,11 +1,11 @@
 from pydantic import BaseModel
 import cohere
 from openai import AsyncOpenAI
-from pinecone import Pinecone, ServerlessSpec  # <- ใช้ class ใหม่
+from pinecone import Pinecone, ServerlessSpec
 from motor.motor_asyncio import AsyncIOMotorClient
 
 # Import centralized configuration
-from ..config import (
+from brand_influencer_matcher_backend.config import (
     OPENAI_API_KEY, COHERE_API_KEY, PINECONE_API_KEY,
     MONGO_URI, DB_NAME, INFLUENCER_COLLECTION,
     PINECONE_INDEX_NAME, PINECONE_SPEC, PINECONE_DIMENSION, PINECONE_METRIC
@@ -48,6 +48,9 @@ except Exception as e:
 mongo_client = AsyncIOMotorClient(MONGO_URI)
 db = mongo_client[DB_NAME]
 collection = db[INFLUENCER_COLLECTION]
+
+# Export for use in other modules
+__all__ = ['db', 'INFLUENCER_COLLECTION', 'InfluencerAnalysis', 'get_embedding']
 
 # -----------------------------
 # Pydantic schema

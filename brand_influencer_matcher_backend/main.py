@@ -30,11 +30,32 @@ app.include_router(brand_router)
 app.include_router(influencer_router)
 app.include_router(match_router)
 
+# Debug: Print registered routes
+print("\n=== Registered Routes ===")
+for route in app.routes:
+    if hasattr(route, "methods"):
+        print(f"{route.path} - {route.methods}")
+print("======================\n")
+
 # Health check endpoint
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
     return {"status": "healthy"}
+
+# Debug endpoint to list all routes
+@app.get("/routes")
+async def list_routes():
+    """List all available API routes"""
+    routes = []
+    for route in app.routes:
+        if hasattr(route, "methods"):
+            routes.append({
+                "path": route.path,
+                "name": route.name,
+                "methods": list(route.methods)
+            })
+    return {"routes": routes}
 
 # Run the application
 if __name__ == "__main__":

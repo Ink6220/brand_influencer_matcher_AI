@@ -3,7 +3,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { X, Plus, Eye } from 'lucide-react';
+import { X, Plus, Eye, BarChart2 } from 'lucide-react';
+import { toast } from 'sonner';
+import { AnalysisModal } from './AnalysisModal';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -30,6 +32,15 @@ type ScoreDetails = {
   [key: string]: number;
 };
 
+interface RadarDataPoint {
+  subject: string;
+  A: number;
+  fullMark: number;
+  fill: string;
+  stroke: string;
+  key: string;
+}
+
 type InfluencerAnalysis = {
   Type_of_content: string;
   target_Audience: string;
@@ -38,37 +49,82 @@ type InfluencerAnalysis = {
   vision: string;
 };
 
-type Influencer = {
+interface Influencer {
   influencer: string;
   total_score: number;
   details: ScoreDetails;
   analysis?: InfluencerAnalysis;
-};
+}
 
-const getInfluencerData = (details: ScoreDetails) => {
-  return [
-    { subject: 'Product Type', A: details.type_of_product, fullMark: 10 },
-    { subject: 'Target Group', A: details.target_group, fullMark: 10 },
-    { subject: 'Positioning', A: details.positioning, fullMark: 10 },
-    { subject: 'Personality', A: details.brand_personality, fullMark: 10 },
-    { subject: 'Vision', A: details.vision, fullMark: 10 },
-  ];
-};
+  const getInfluencerData = (details: ScoreDetails) => {
+    return [
+      { 
+        subject: 'Product Type', 
+        A: details.type_of_product, 
+        fullMark: 10,
+        fill: 'url(#productGradient)',
+        stroke: '#3b82f6',
+        key: 'type_of_product'
+      },
+      { 
+        subject: 'Target Group', 
+        A: details.target_group, 
+        fullMark: 10,
+        fill: 'url(#targetGradient)',
+        stroke: '#10b981',
+        key: 'target_group'
+      },
+      { 
+        subject: 'Positioning', 
+        A: details.positioning, 
+        fullMark: 10,
+        fill: 'url(#positioningGradient)',
+        stroke: '#f59e0b',
+        key: 'positioning'
+      },
+      { 
+        subject: 'Personality', 
+        A: details.brand_personality, 
+        fullMark: 10,
+        fill: 'url(#personalityGradient)',
+        stroke: '#8b5cf6',
+        key: 'brand_personality'
+      },
+      { 
+        subject: 'Vision', 
+        A: details.vision, 
+        fullMark: 10,
+        fill: 'url(#visionGradient)',
+        stroke: '#ec4899',
+        key: 'vision'
+      },
+    ];
+  };
 
 export function BrandInfluencerMatcher() {
   const [brands, setBrands] = useState<Brand[]>([]);
   const [selectedBrand, setSelectedBrand] = useState('');
   const [influencers, setInfluencers] = useState<Influencer[]>([]);
+  const productGradient = useRef<SVGLinearGradientElement>(null);
+  const targetGradient = useRef<SVGLinearGradientElement>(null);
+  const positioningGradient = useRef<SVGLinearGradientElement>(null);
+  const personalityGradient = useRef<SVGLinearGradientElement>(null);
+  const visionGradient = useRef<SVGLinearGradientElement>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [uploadType, setUploadType] = useState<'brand' | 'influencer' | null>(null);
   const [formData, setFormData] = useState({
     name: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitType, setSubmitType] = useState<'brand' | 'influencer' | null>(null);
   const [selectedInfluencer, setSelectedInfluencer] = useState<Influencer | null>(null);
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showAnalysisModal, setShowAnalysisModal] = useState(false);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
-  const modalRef = useRef<HTMLDivElement>(null);
+  const [radarData, setRadarData] = useState<RadarDataPoint[]>([]);
+  const [currentInfluencer, setCurrentInfluencer] = useState<Influencer | null>(null);
 
   // Fetch brands on component mount
   useEffect(() => {
@@ -82,16 +138,44 @@ export function BrandInfluencerMatcher() {
         setBrands(data);
       } catch (error) {
         console.error('Error fetching brands:', error);
-        // Fallback to sample data if API fails
-        setBrands([
-          { _id: '1', name: 'Sample Brand 1' },
-          { _id: '2', name: 'Sample Brand 2' }
-        ]);
       }
     };
 
     fetchBrands();
   }, []);
+
+  const fetchInfluencerAnalysis = async (influencerName: string) => {
+    try {
+      console.log(`[API] Fetching analysis for influencer: ${influencerName}`);
+      const response = await fetch(`http://localhost:8000/api/v1/influencer-analysis/${encodeURIComponent(influencerName)}`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Cache-Control': 'no-cache',
+        },
+      });
+      
+      console.log(`[API] Response status: ${response.status} ${response.statusText}`);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`[API] Error response:`, errorText);
+        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+      }
+      
+      const data = await response.json();
+      console.log('[API] Analysis data received:', data);
+      
+      if (!data) {
+        throw new Error('No data received from the server');
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('[API] Error fetching influencer analysis:', error);
+      throw error;
+    }
+  };
 
   const handleBrandSelect = async (brandName: string) => {
     setSelectedBrand(brandName);
@@ -143,6 +227,11 @@ export function BrandInfluencerMatcher() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!uploadType) return;
+    
+    setIsSubmitting(true);
+    setSubmitSuccess(false);
+    setSubmitType(uploadType);
     
     try {
       let endpoint: string;
@@ -150,7 +239,7 @@ export function BrandInfluencerMatcher() {
       
       if (uploadType === 'brand') {
         endpoint = 'http://localhost:8000/api/v1/analyze-brand';
-        requestBody = { name: formData.name };
+        requestBody = { brand_name: formData.name };  // Changed from 'name' to 'brand_name'
       } else {
         endpoint = 'http://localhost:8000/api/v1/analyze-influencer';
         requestBody = { influencer_name: formData.name };
@@ -175,15 +264,25 @@ export function BrandInfluencerMatcher() {
         setBrands(data);
       }
 
-      // Reset form and close modal
-      setFormData({
-        name: ''
-      });
-      setUploadType(null);
-      setShowUploadModal(false);
-      
-      // Show success message
-      alert(`${uploadType === 'brand' ? 'แบรนด์' : 'อินฟลูเอนเซอร์'} ถูกเพิ่มเรียบร้อยแล้ว!`);
+      // Show success message in the form
+      setSubmitSuccess(true);
+      // Reset form after 2 seconds and close modal
+      setTimeout(() => {
+        setFormData({
+          name: ''
+        });
+        setSubmitSuccess(false);
+        setSubmitType(null);
+        
+        // Close modal for both influencer and brand additions
+        setUploadType(null);
+        setShowUploadModal(false);
+        
+        // Refresh the page if we added an influencer to see the new match
+        if (uploadType === 'influencer' && selectedBrand) {
+          window.location.reload();
+        }
+      }, 2000);
     } catch (error) {
       console.error('Error submitting data:', error);
       alert('เกิดข้อผิดพลาดในการส่งข้อมูล กรุณาลองใหม่อีกครั้ง');
@@ -211,55 +310,92 @@ export function BrandInfluencerMatcher() {
     console.log('Modal state updated - showProfileModal:', showProfileModal, 'selectedInfluencer:', selectedInfluencer);
   }, [showProfileModal, selectedInfluencer]);
 
-  const fetchInfluencerAnalysis = async (influencerName: string) => {
+  // Create a ref for the modal to handle clicks outside
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  const handleAnalyzeMatch = (influencer: Influencer) => {
+    if (!selectedBrand || selectedBrand.trim() === '') {
+      toast.error('กรุณาเลือกแบรนด์ก่อนทำการวิเคราะห์');
+      return;
+    }
+    console.log('Analyzing match for:', influencer.influencer, 'and brand:', selectedBrand);
+    setCurrentInfluencer(influencer);
+    setShowAnalysisModal(true);
+  };
+
+  const handleViewProfile = async (influencer: Influencer) => {
     try {
-      console.log('Fetching analysis for:', influencerName);
-      setIsLoadingProfile(true);
-      // Remove @ symbol if present in the username
-      const cleanName = influencerName.startsWith('@') ? influencerName.substring(1) : influencerName;
-      const response = await fetch(`http://localhost:8000/api/v1/influencer-analysis/${encodeURIComponent(cleanName)}`);
+      console.log('[Profile] Opening profile for:', influencer.influencer);
+      // First set the influencer and show the modal
+      setSelectedInfluencer(influencer);
+      setShowProfileModal(true);
       
-      console.log('Response status:', response.status);
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Error response:', errorText);
-        throw new Error(`Failed to fetch influencer analysis: ${response.status} ${response.statusText}`);
+      // Check if we already have the analysis data
+      if (!influencer.analysis) {
+        console.log('[Profile] No cached analysis, fetching...');
+        setIsLoadingProfile(true);
+        
+        try {
+          const response = await fetchInfluencerAnalysis(influencer.influencer);
+          console.log('[Profile] Analysis data received:', response);
+          
+          // The response might be the analysis object directly or have it in an 'analysis' property
+          const analysisData = response.analysis || response;
+          
+          if (analysisData && 
+              (analysisData.Type_of_content || 
+               analysisData.target_Audience || 
+               analysisData.positioning || 
+               analysisData.personality || 
+               analysisData.vision)) {
+            
+            // Create a properly formatted analysis object
+            const formattedAnalysis: InfluencerAnalysis = {
+              Type_of_content: analysisData.Type_of_content || 'ไม่พบข้อมูล',
+              target_Audience: analysisData.target_Audience || 'ไม่พบข้อมูล',
+              positioning: analysisData.positioning || 'ไม่พบข้อมูล',
+              personality: analysisData.personality || 'ไม่พบข้อมูล',
+              vision: analysisData.vision || 'ไม่พบข้อมูล'
+            };
+            
+            console.log('[Profile] Formatted analysis data:', formattedAnalysis);
+            
+            // Update the selected influencer with the new analysis data
+            setSelectedInfluencer(prev => ({
+              ...prev!,
+              analysis: formattedAnalysis
+            }));
+            
+            // Also update the influencers list to cache this data
+            setInfluencers(prevInfluencers => 
+              prevInfluencers.map(inf => 
+                inf.influencer === influencer.influencer 
+                  ? { ...inf, analysis: formattedAnalysis } 
+                  : inf
+              )
+            );
+          } else {
+            console.warn('[Profile] No valid analysis data in response for:', influencer.influencer);
+            console.warn('Response structure:', response);
+            toast.error('ไม่พบข้อมูลการวิเคราะห์สำหรับอินฟลูเอนเซอร์นี้');
+          }
+        } catch (error) {
+          console.error('[Profile] Error fetching influencer analysis:', error);
+          toast.error('เกิดข้อผิดพลาดในการโหลดข้อมูลโปรไฟล์');
+        } finally {
+          setIsLoadingProfile(false);
+        }
+      } else {
+        console.log('[Profile] Using cached analysis data');
       }
-      
-      const data = await response.json();
-      console.log('Analysis data received:', data);
-      return data;
     } catch (error) {
-      console.error('Error in fetchInfluencerAnalysis:', error);
-      return null;
-    } finally {
+      console.error('[Profile] Error in handleViewProfile:', error);
+      toast.error('เกิดข้อผิดพลาดในการเปิดโปรไฟล์');
       setIsLoadingProfile(false);
     }
   };
 
-  const handleViewProfile = async (influencer: Influencer) => {
-    console.log('handleViewProfile called with:', influencer);
-    setSelectedInfluencer(influencer);
-    setShowProfileModal(true);
-    console.log('showProfileModal should be true now');
-    
-    // Fetch analysis data if not already loaded
-    if (!influencer.analysis) {
-      console.log('Fetching analysis for:', influencer.influencer);
-      const analysis = await fetchInfluencerAnalysis(influencer.influencer);
-      console.log('Analysis data received:', analysis);
-      if (analysis) {
-        setSelectedInfluencer(prev => {
-          console.log('Updating influencer with analysis data');
-          return {
-            ...prev!,
-            analysis
-          };
-        });
-      }
-    }
-  };
+
   return (
     <div className="container mx-auto p-6 max-w-4xl">
       {/* Upload Button - Fixed at top right of screen */}
@@ -341,16 +477,36 @@ export function BrandInfluencerMatcher() {
                   >
                     ยกเลิก
                   </button>
-                  <button
-                    type="submit"
-                    className={`px-6 py-2.5 text-base font-medium text-white rounded-md ${
-                      uploadType === 'brand' 
-                        ? 'bg-pink-600 hover:bg-pink-700' 
-                        : 'bg-blue-600 hover:bg-blue-700'
-                    }`}
-                  >
-                    เพิ่ม{uploadType === 'brand' ? 'แบรนด์' : 'อินฟลูเอนเซอร์'}
-                  </button>
+                  {submitSuccess && submitType === uploadType ? (
+                    <div className="text-green-600 text-sm font-medium flex items-center">
+                      <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                      </svg>
+                      {submitType === 'brand' ? 'เพิ่มแบรนด์เรียบร้อยแล้ว!' : 'เพิ่มอินฟลูเอนเซอร์เรียบร้อยแล้ว!'}
+                    </div>
+                  ) : (
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className={`px-6 py-2.5 text-base font-medium text-white rounded-md flex items-center justify-center min-w-[120px] ${
+                        isSubmitting ? 'opacity-75 cursor-not-allowed' : ''
+                      } ${
+                        uploadType === 'brand' 
+                          ? 'bg-pink-600 hover:bg-pink-700' 
+                          : 'bg-blue-600 hover:bg-blue-700'
+                      }`}
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          กำลังโหลด...
+                        </>
+                      ) : `เพิ่ม${uploadType === 'brand' ? 'แบรนด์' : 'อินฟลูเอนเซอร์'}`}
+                    </button>
+                  )}
                 </div>
               </form>
             )}
@@ -431,10 +587,37 @@ export function BrandInfluencerMatcher() {
                               data={getInfluencerData(influencer.details)}
                               margin={{ top: 10, right: 10, bottom: 10, left: 10 }}
                             >
-                              <PolarGrid gridType="circle" stroke="#e5e7eb" />
+                              <defs>
+                                {/* Product Type Gradient */}
+                                <linearGradient id="productGradient" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="0%" stopColor="#93c5fd" stopOpacity={0.8}/>
+                                  <stop offset="100%" stopColor="#3b82f6" stopOpacity={0.3}/>
+                                </linearGradient>
+                                {/* Target Group Gradient */}
+                                <linearGradient id="targetGradient" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="0%" stopColor="#6ee7b7" stopOpacity={0.8}/>
+                                  <stop offset="100%" stopColor="#10b981" stopOpacity={0.3}/>
+                                </linearGradient>
+                                {/* Positioning Gradient */}
+                                <linearGradient id="positioningGradient" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="0%" stopColor="#fcd34d" stopOpacity={0.8}/>
+                                  <stop offset="100%" stopColor="#f59e0b" stopOpacity={0.3}/>
+                                </linearGradient>
+                                {/* Personality Gradient */}
+                                <linearGradient id="personalityGradient" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="0%" stopColor="#c4b5fd" stopOpacity={0.8}/>
+                                  <stop offset="100%" stopColor="#8b5cf6" stopOpacity={0.3}/>
+                                </linearGradient>
+                                {/* Vision Gradient */}
+                                <linearGradient id="visionGradient" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="0%" stopColor="#f9a8d4" stopOpacity={0.8}/>
+                                  <stop offset="100%" stopColor="#ec4899" stopOpacity={0.3}/>
+                                </linearGradient>
+                              </defs>
+                              <PolarGrid gridType="circle" stroke="#e2e8f0" />
                               <PolarAngleAxis 
                                 dataKey="subject" 
-                                tick={{ fontSize: 12, fill: '#4b5563' }}
+                                tick={{ fontSize: 11, fill: '#4a5568' }}
                                 tickLine={false}
                               />
                               <PolarRadiusAxis 
@@ -442,58 +625,77 @@ export function BrandInfluencerMatcher() {
                                 domain={[0, 10]}
                                 tickCount={6}
                                 axisLine={false}
-                                tick={{ fontSize: 10, fill: '#9ca3af' }}
+                                tick={{ fontSize: 10, fill: '#718096' }}
                                 tickFormatter={(value) => value.toString()}
                               />
                               <Radar
-                                name="Score"
+                                name="Scores"
                                 dataKey="A"
-                                stroke="#4f46e5"
-                                fill="#4f46e5"
-                                fillOpacity={0.4}
+                                stroke="#8884d8"
+                                fill="#8884d8"
+                                fillOpacity={0.6}
                                 strokeWidth={2}
-                                dot={{ fill: '#4f46e5', strokeWidth: 2, r: 4 }}
+                                dot={{
+                                  fill: '#8884d8',
+                                  stroke: '#fff',
+                                  strokeWidth: 1.5,
+                                  r: 4
+                                }}
                               />
                             </RadarChart>
                           </ResponsiveContainer>
                         </div>
                         
-                        <div className="flex justify-center">
-                          <div className="grid grid-cols-2 gap-x-8 gap-y-3 text-sm">
-                            <div className="text-center">
-                              <p className="font-medium">ประเภทสินค้า</p>
-                              <p className="text-muted-foreground">{influencer.details.type_of_product.toFixed(1)}/10</p>
+                        <div className="flex justify-center mt-2">
+                          <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
+                            <div className="text-center bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-2 border border-blue-100 shadow-sm">
+                              <p className="font-medium text-blue-800">ประเภทสินค้า</p>
+                              <p className="text-blue-600 font-semibold">{influencer.details.type_of_product.toFixed(1)}/10</p>
                             </div>
-                            <div className="text-center">
-                              <p className="font-medium">กลุ่มเป้าหมาย</p>
-                              <p className="text-muted-foreground">{influencer.details.target_group.toFixed(1)}/10</p>
+                            <div className="text-center bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-2 border border-green-100 shadow-sm">
+                              <p className="font-medium text-green-800">กลุ่มเป้าหมาย</p>
+                              <p className="text-green-600 font-semibold">{influencer.details.target_group.toFixed(1)}/10</p>
                             </div>
-                            <div className="text-center">
-                              <p className="font-medium">การวางตำแหน่ง</p>
-                              <p className="text-muted-foreground">{influencer.details.positioning.toFixed(1)}/10</p>
+                            <div className="text-center bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-lg p-2 border border-yellow-100 shadow-sm">
+                              <p className="font-medium text-yellow-800">การวางตำแหน่ง</p>
+                              <p className="text-yellow-600 font-semibold">{influencer.details.positioning.toFixed(1)}/10</p>
                             </div>
-                            <div className="text-center">
-                              <p className="font-medium">บุคลิกภาพ</p>
-                              <p className="text-muted-foreground">{influencer.details.brand_personality.toFixed(1)}/10</p>
+                            <div className="text-center bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-2 border border-purple-100 shadow-sm">
+                              <p className="font-medium text-purple-800">บุคลิกภาพ</p>
+                              <p className="text-purple-600 font-semibold">{influencer.details.brand_personality.toFixed(1)}/10</p>
                             </div>
-                            <div className="col-span-2 text-center">
-                              <p className="font-medium">วิสัยทัศน์</p>
-                              <p className="text-muted-foreground">{influencer.details.vision.toFixed(1)}/10</p>
+                            <div className="col-span-2 text-center bg-gradient-to-br from-pink-50 to-pink-100 rounded-lg p-2 border border-pink-100 shadow-sm">
+                              <p className="font-medium text-pink-800">วิสัยทัศน์</p>
+                              <p className="text-pink-600 font-semibold">{influencer.details.vision.toFixed(1)}/10</p>
                             </div>
                           </div>
                         </div>
                         
-                        <Button 
-                          className="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white"
-                          onClick={(e) => {
-                            console.log('Profile button clicked for:', influencer.influencer);
-                            e.stopPropagation();
-                            handleViewProfile(influencer);
-                          }}
-                        >
-                          ดูโปรไฟล์
-                          <Eye className="ml-2 h-4 w-4" />
-                        </Button>
+                        <div className="space-y-2 mt-4">
+                          <div className="grid grid-cols-2 gap-2">
+                            <Button 
+                              variant="outline"
+                              className="w-full border-blue-600 text-blue-700 hover:bg-blue-50 hover:text-blue-800"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleViewProfile(influencer);
+                              }}
+                            >
+                              <Eye className="h-4 w-4 mr-1" />
+                              ดูโปรไฟล์
+                            </Button>
+                            <Button 
+                              className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleAnalyzeMatch(influencer);
+                              }}
+                            >
+                              <BarChart2 className="h-4 w-4 mr-1" />
+                              วิเคราะห์
+                            </Button>
+                          </div>
+                        </div>
                       </CardContent>
                     </Card>
                   </div>
@@ -553,10 +755,20 @@ export function BrandInfluencerMatcher() {
                 </div>
               </div>
             ) : (
-              <div className="text-center py-8 text-gray-500">ไม่พบข้อมูลโปรไฟล์</div>
+              <div className="text-center py-8">ไม่พบข้อมูลการวิเคราะห์</div>
             )}
           </div>
         </div>
+      )}
+
+      {/* Analysis Modal */}
+      {currentInfluencer && selectedBrand && selectedBrand.trim() !== '' && (
+        <AnalysisModal
+          isOpen={showAnalysisModal}
+          onClose={() => setShowAnalysisModal(false)}
+          influencerName={currentInfluencer.influencer}
+          brandName={selectedBrand}
+        />
       )}
     </div>
   );

@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from agents import Agent, WebSearchTool
+from brand_influencer_matcher_backend.config import BRAND_COLLECTION
 
 # ------------------------------
 # Pydantic Schema
