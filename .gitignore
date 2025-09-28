@@ -1,3 +1,6 @@
+# System Files
+.DS_Store
+
 # Python
 __pycache__/
 *.py[cod]
@@ -105,3 +108,4 @@ out/
 # Production
 build
 .env
+old_files_backup/
