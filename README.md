@@ -1,53 +1,148 @@
-# Brand-Influencer Matching API
-<img width="882" height="798" alt="image" src="https://github.com/user-attachments/assets/ea244c6c-d7fb-4325-aaf3-3ee7adb6b2ba" />
+# Brand-Influencer Matching Platform
 
-A powerful API service that helps brands find the most suitable influencers for their marketing campaigns using advanced AI and vector similarity search.
+<div align="center">
+  <img src="https://img.shields.io/badge/Next.js-13.4.0-black?style=for-the-badge&logo=next.js" alt="Next.js">
+  <img src="https://img.shields.io/badge/TypeScript-4.9.5-3178C6?style=for-the-badge&logo=typescript" alt="TypeScript">
+  <img src="https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python" alt="Python">
+  <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi" alt="FastAPI">
+  <img src="https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB">
+</div>
 
-## 🚀 Features
+## 📝 Overview
 
-- **AI-Powered Analysis**: Analyzes brand and influencer profiles using state-of-the-art language models
-- **Vector Similarity Search**: Uses Pinecone for efficient similarity matching
-- **Multi-Platform Support**: Works with various social media platforms
-- **RESTful API**: Built with FastAPI for high performance and easy integration
-- **Asynchronous Processing**: Handles multiple requests efficiently
-- **MongoDB Integration**: For flexible data storage and retrieval
+A powerful platform that helps brands find the most suitable influencers for their marketing campaigns using AI-powered analysis and matching algorithms.
 
-## 🛠️ Tech Stack
+## ✨ Key Features
 
-- **Backend**: Python 3.9+
-- **Web Framework**: FastAPI
-- **Vector Database**: Pinecone
-- **Language Models**: OpenAI & Cohere
-- **Database**: MongoDB
-- **API Documentation**: Swagger UI & ReDoc
+- **🔍 Influencer Discovery** - Find influencers that match your brand's identity
+- **📊 Compatibility Analysis** - In-depth analysis of brand-influencer compatibility
+- **📱 Detailed Profiles** - View comprehensive influencer insights and analytics
+- **📈 Smart Scoring** - Automated compatibility scoring system
+- **🚀 Modern Interface** - Intuitive and user-friendly dashboard
 
-## 📦 Prerequisites
+## 🛠️ Project Structure
 
-- Python 3.9 or higher
-- MongoDB (local or cloud instance)
-- Pinecone account and API key
-- OpenAI API key
-- Cohere API key
+```
+projectA/
+├── brand_influencer_matcher_backend/  # Backend (FastAPI)
+│   ├── api/
+│   │   └── endpoints/                # API endpoints
+│   ├── models/                       # Database models
+│   ├── services/                     # Business logic
+│   └── main.py                       # FastAPI application
+│
+├── brand_influencer_matcher_frondend/  # Frontend (Next.js)
+│   ├── app/                          # App router
+│   ├── components/                   # React components
+│   ├── lib/                          # Utility functions
+│   └── public/                       # Static files
+│
+└── README.md                         # This file
+```
 
 ## 🚀 Installation
 
-1. **Clone the repository**
-   ```bash
-   git clone [your-repository-url]
-   cd projectA
-   ```
+### 1. Clone the Repository
 
-2. **Create and activate a virtual environment**
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
+```bash
+git clone https://github.com/Ink6220/brand_influencer_matcher_AI.git
+cd brand_influencer_matcher_AI
+```
 
-3. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-   (Note: Please create a requirements.txt file with all dependencies)
+### 2. Backend Setup
+
+```bash
+# Navigate to backend directory
+cd brand_influencer_matcher_backend
+
+# Create and activate virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Create .env file from example
+cp .env.example .env
+
+# Update environment variables
+nano .env  # or open in your preferred editor
+```
+
+### 3. Frontend Setup
+
+```bash
+# Navigate to frontend directory
+cd ../brand_influencer_matcher_frondend
+
+# Install dependencies
+npm install
+
+# Create .env.local from example
+cp .env.example .env.local
+
+# Update environment variables
+nano .env.local  # or open in your preferred editor
+```
+
+## 🚀 Running the Application
+
+### 1. Start Backend Server
+
+```bash
+# From brand_influencer_matcher_backend directory
+uvicorn main:app --reload
+```
+
+### 2. Start Frontend Development Server
+
+```bash
+# From brand_influencer_matcher_frondend directory
+npm run dev
+```
+
+Open your browser and navigate to [http://localhost:3000](http://localhost:3000)
+
+## 🔧 Environment Variables
+
+### Backend (`.env`)
+
+```
+MONGODB_URL=mongodb://localhost:27017/brand_influencer
+SECRET_KEY=your-secret-key
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+```
+
+### Frontend (`.env.local`)
+
+```
+NEXT_PUBLIC_API_URL=http://localhost:8000
+```
+
+## 📚 API Documentation
+
+Once the application is running, you can access the API documentation at:
+- Swagger UI: [http://localhost:8000/docs](http://localhost:8000/docs)
+- ReDoc: [http://localhost:8000/redoc](http://localhost:8000/redoc)
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📄 License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+## 📞 Contact
+
+- [Your Name] - [Your Email]
+- Project Link: [https://github.com/Ink6220/brand_influencer_matcher_AI](https://github.com/Ink6220/brand_influencer_matcher_AI)
+
 
 4. **Set up environment variables**
    Create a `.env` file in the project root with the following variables:
