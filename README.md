@@ -39,7 +39,7 @@ A powerful platform that helps brands find the most suitable influencers for the
 <img width="300" height="600" alt="image" src="https://github.com/user-attachments/assets/4b226c5d-da9c-4e7f-bb39-a480d4d3e2fc" />
 </div>
 
-- **📤 Uploade New Influencers & Brands ** - Easy to update New influencer and Brands
+- ** 📤 Uploade New Influencers & Brands ** - Easy to update New influencer and Brands
   
 <div align="center">
 <img width="304" height="194" alt="image" src="https://github.com/user-attachments/assets/7d4ec8f8-06e3-4649-be7c-e26a537ec4f6" />
