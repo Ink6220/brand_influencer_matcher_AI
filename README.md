@@ -21,20 +21,26 @@ A powerful platform that helps brands find the most suitable influencers for the
 <div align="center">
 <img width="626" height="626" alt="image" src="https://github.com/user-attachments/assets/4f08989b-093e-4ca1-bac5-98f5fb8e8770" />
 </div>
+
 - **🚀 Modern Interface** - Intuitive and user-friendly dashboard
 - **📈 Smart Scoring** - Automated compatibility scoring system
 - **📊 Compatibility Analysis** - In-depth analysis of brand-influencer compatibility
+
 <div align="center">
 <img width="657" height="603" alt="image" src="https://github.com/user-attachments/assets/8abe93da-302f-4919-932e-47f9af014b39" />
 </div>
+
 - **📱 Detailed Profiles** - View comprehensive influencer insights and analytics
+  
 <div align="center">
 <img width="597" height="580" alt="image" src="https://github.com/user-attachments/assets/370622bf-b93f-408f-be23-f6f0582d1446" />
 </div>
 <div align="center">
 <img width="300" height="600" alt="image" src="https://github.com/user-attachments/assets/4b226c5d-da9c-4e7f-bb39-a480d4d3e2fc" />
 </div>
+
 - **📤 Uploade New Influencers & Brands ** - Easy to update New influencer and Brands
+  
 <div align="center">
 <img width="304" height="194" alt="image" src="https://github.com/user-attachments/assets/7d4ec8f8-06e3-4649-be7c-e26a537ec4f6" />
 </div>
@@ -186,13 +192,11 @@ Once the application is running, you can access the API documentation at:
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
-## 📞 Contact
+## 🏞️ Environment
 
-- [Your Name] - [Your Email]
 - Project Link: [https://github.com/Ink6220/brand_influencer_matcher_AI](https://github.com/Ink6220/brand_influencer_matcher_AI)
 
-
-4. **Set up environment variables**
+   **Set up environment variables**
    Create a `.env` file in the project root with the following variables:
    ```env
    # API Keys
